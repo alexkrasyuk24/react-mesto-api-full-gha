@@ -1,0 +1,11 @@
+.error {
+  display: flex;
+  font-family: 'Inter', Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 12px;
+  color: #FF0000;
+  margin: 0 0 13px 0;
+  height: 12px;
+}

@@ -1,0 +1,10 @@
+.elements__item {
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  border-radius: 10px;
+  box-sizing: border-box;
+  position: relative;
+  list-style: none;
+  width: 282px;
+}
