@@ -1,30 +1,21 @@
 const jwt = require('jsonwebtoken');
-const { UnauthorizedError } = require('../utils/errors/UnauthorizedError');
-const { SECRET_KEY } = require('../utils/errors/constans');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const { SICRET_KEY_SERVER } = require('../utils/constants');
 
-const authMiddleware = (req, res, next) => {
+module.exports = (req, res, next) => {
   const { authorization } = req.headers;
-
-  if (!authorization || !authorization.startsWith('Bearer ')) {
-    next(new UnauthorizedError('Нужна авторизация.'));
-    return;
+  const bearer = 'Bearer ';
+  if (!authorization || !authorization.startsWith(bearer)) {
+    return next(new UnauthorizedError('Нужна авторизация.'));
   }
-
-  const token = authorization.replace('Bearer ', '');
+  const token = authorization.replace(bearer, '');
   let payload;
-
   try {
-    payload = jwt.verify(token, SECRET_KEY);
+    payload = jwt.verify(token, SICRET_KEY_SERVER);
   } catch (err) {
-    next(new UnauthorizedError('Нужна авторизация.'));
-    return;
+    return next(new UnauthorizedError('Нужна авторизация.'));
   }
-
   req.user = payload;
 
-  next();
-};
-
-module.exports = {
-  authMiddleware,
+  return next();
 };

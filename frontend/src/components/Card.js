@@ -1,46 +1,43 @@
-import React, { useContext } from "react";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import React, { useContext } from "react"
+import { CurrentUserContext } from "../contexts/CurrentUserContext"
 
 const Card = ({
-  owner,
-  likes,
-  _id,
-  name,
-  link,
-  onCardClick,
+ onCardClick,
   onCardLike,
   onCardDelete,
+  card,
 }) => {
-  const currentUser = useContext(CurrentUserContext);
-
-  const isOwn = owner._id === currentUser._id;
-  const isLiked = likes.some((i) => i._id === currentUser._id);
+  const currentUser = useContext(CurrentUserContext)
+ 
+  //const isOwn = owner._id === currentUser._id;
+  const isOwn = (card.owner?._id || card.owner) === currentUser._id
+  const isLiked = card.likes.some((i) => i === currentUser._id)
   const cardLikeButtonClassName = `elements__like ${
     isLiked ? "element__like-btn_active" : ""
-  }`;
+  }`
 
   const handleClickCard = () => {
-    onCardClick({ name, link });
-  };
+    onCardClick(card)
+  }
 
   const handleLikeClick = () => {
-    onCardLike(isLiked, _id);
-  };
+    onCardLike(card)
+  }
 
   const handleDeleteClick = () => {
-    onCardDelete(_id);
-  };
+    onCardDelete(card)
+  }
 
   return (
     <li className="elements__item">
       <img
-        src={link}
-        alt={name}
+        src={card.link}
+        alt={card.name}
         className="elements__image"
         onClick={handleClickCard}
       />
       <div className="elements__container">
-        <h2 className="elements__title">{name}</h2>
+        <h2 className="elements__title">{card.name}</h2>
         <div className="element__likes">
           <button
             className={cardLikeButtonClassName}
@@ -48,7 +45,7 @@ const Card = ({
             aria-label="Лайк"
             onClick={handleLikeClick}
           />
-          <span className="element__likes-number">{likes.length}</span>
+          <span className="element__likes-number">{card.likes.length}</span>
         </div>
         {isOwn && (
           <button
@@ -59,7 +56,7 @@ const Card = ({
         )}
       </div>
     </li>
-  );
-};
+  )
+}
 
-export default Card;
+export default Card

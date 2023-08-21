@@ -1,43 +1,55 @@
 class ApiAuth {
-  constructor(baseUrl) {
-    this._baseUrl = baseUrl;
+  constructor({ baseUrl, headers }) {
+    this._baseUrl = baseUrl
+    this._headers = headers
   }
 
-  login({ email, password }) {
+  login(userData) {
     return fetch(`${this._baseUrl}/signin`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    }).then(this._checkResponse);
+      headers: this._headers,
+      body: JSON.stringify({
+        email: userData.email,
+        password: userData.password,
+      }),
+    }).then(this._checkResponse)
   }
 
-  register({ email, password }) {
+  register(newUserData) {
     return fetch(`${this._baseUrl}/signup`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    }).then(this._checkResponse);
+      headers: this._headers,
+      body: JSON.stringify({
+        email: newUserData.email,
+        password: newUserData.password,
+      }),
+    }).then(this._checkResponse)
   }
 
-  checkAuth() {
-    const JWT = localStorage.getItem("JWT");
+  checkAuth(token) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${JWT}`,
+        authorization: `Bearer ${token}`,
       },
-    }).then(this._checkResponse);
+    }).then(this._checkResponse)
   }
 
   _checkResponse(res) {
     if (res.ok) {
-      return res.json();
+      return res.json()
     }
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return Promise.reject(`Ошибка: ${res.status}`)
   }
 }
 
-const apiAuth = new ApiAuth("https://auth.nomoreparties.co");
+const apiAuth = new ApiAuth({
+  // baseUrl: "http://localhost:3000",
+  baseUrl: "https://api.krasyuk.nomoredomainsicu.ru",
+  headers: {
+    "Content-Type": "application/json",
+  },
+})
 
-export default apiAuth;
+export default apiAuth

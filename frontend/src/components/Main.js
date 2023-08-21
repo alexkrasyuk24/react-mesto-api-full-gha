@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
-import Card from "./Card";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import React, { useContext } from "react"
+import Card from "./Card"
+import { CurrentUserContext } from "../contexts/CurrentUserContext"
 
 const Main = ({
   onEditProfile,
@@ -9,10 +9,10 @@ const Main = ({
   onCardClick,
   onCardLike,
   onCardDelete,
-  cards
+  cards,
 }) => {
-  const { name, about, avatar } = useContext(CurrentUserContext);
-
+  const { name, about, avatar } = useContext(CurrentUserContext)
+ 
   return (
     <main className="content">
       <section className="profile">
@@ -44,17 +44,17 @@ const Main = ({
             return (
               <Card
                 key={card._id}
-                {...card}
+                card={card}
                 onCardClick={onCardClick}
                 onCardLike={onCardLike}
                 onCardDelete={onCardDelete}
               />
-            );
+            )
           })}
         </ul>
       </section>
     </main>
-  );
-};
+  )
+}
 
-export default Main;
+export default Main

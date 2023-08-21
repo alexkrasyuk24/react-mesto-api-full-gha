@@ -7,8 +7,8 @@
 
 ## Ссылки на проект
 
-IP-адрес 51.250.107.69
+IP 51.250.107.69
 
-Frontend https://domainname.alexkrasyuk.nomoreparties.co
+Frontend https://krasyuk.nomoredomainsicu.ru
 
-Backend https://domainname-api.alexkras.nomoreparties.co
+Backend https://api.krasyuk.nomoredomainsicu.ru

@@ -1,25 +1,44 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const helmet = require('helmet');
 const { errors } = require('celebrate');
-const { cardsRouter } = require('./routes/cards');
-const { usersRouter } = require('./routes/users');
-const { createUser, login } = require('./controllers/users');
-const { errorsMiddleware } = require('./middlewares/errors');
-const { authMiddleware } = require('./middlewares/auth');
-const { celebrateSignIn, celebrateSignUp } = require('./celebrate/users');
-const { NotFoundError } = require('./utils/errors/NotFoundError');
+const helmet = require('helmet');
+const bodyParser = require('body-parser');
+const cors = require('./middlewares/cors');
+const limiter = require('./middlewares/rateLimiter');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const routeSignup = require('./routes/signup');
+const routeSignin = require('./routes/signin');
+const auth = require('./middlewares/auth');
+const routeUsers = require('./routes/users');
+const routeCards = require('./routes/cards');
+const NotFoundError = require('./errors/NotFoundError');
+const errorHandler = require('./middlewares/errorHandler');
+
+const URL = 'mongodb://127.0.0.1:27017/mestodb';
 
 const { PORT = 3000 } = process.env;
 
+mongoose.set('strictQuery', true);
+
+mongoose
+  .connect(URL)
+  .then(() => {
+    console.log('Сервер запущен');
+  })
+  .catch(() => {
+    console.log('Не удалось подключиться к серверу');
+  });
+
 const app = express();
-app.use(express.json());
+
 app.use(helmet());
 
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(requestLogger);
+app.use(cors);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -27,22 +46,19 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.post('/signup', celebrateSignUp, createUser);
-app.post('/signin', celebrateSignIn, login);
+app.use(limiter);
 
-app.use('/cards', authMiddleware, cardsRouter);
-app.use('/users', authMiddleware, usersRouter);
+app.use('/', routeSignup);
+app.use('/', routeSignin);
 
-app.use((req, res, next) => {
-  next(new NotFoundError('Страница не найдена'));
-});
+app.use(auth);
 
+app.use('/users', routeUsers);
+app.use('/cards', routeCards);
+
+app.use((req, res, next) => next(new NotFoundError('Страница не найдена')));
+app.use(errors());
+app.use(errorHandler);
 app.use(errorLogger);
 
-app.use(errors());
-app.use(errorsMiddleware);
-
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log('Сервер запущен');
-});
+app.listen(PORT);
