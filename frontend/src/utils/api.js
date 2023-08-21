@@ -1,7 +1,7 @@
 class Api {
-  constructor(configuration) {
+  constructor(options) {
     // тело конструктора
-    this._baseUrl = configuration.baseUrl
+    this._baseUrl = options.baseUrl
   }
 
   getUserInfo() {
