@@ -1,7 +1,7 @@
-const Card = require("../models/card");
-const NotFoundError = require("../errors/NotFoundError");
-const ForbiddenError = require("../errors/ForbiddenError");
-const BadRequestError = require("../errors/BadRequestError");
+const Card = require('../models/card');
+const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
+const BadRequestError = require('../errors/BadRequestError');
 
 function getCards(_, res, next) {
   Card.find({})
@@ -16,11 +16,11 @@ function createCard(req, res, next) {
   Card.create({ name, link, owner: userId })
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         next(
           new BadRequestError(
-            "Переданы некорректные данные при создании карточки"
-          )
+            'Переданы некорректные данные при создании карточки',
+          ),
         );
       } else {
         next(err);
@@ -37,20 +37,20 @@ function deleteCardById(req, res, next) {
   })
     .then((card) => {
       if (!card) {
-        throw new NotFoundError("Данные по указанному id не найдены");
+        throw new NotFoundError('Данные по указанному id не найдены');
       }
 
       const { owner: cardOwnerId } = card;
 
       if (cardOwnerId.valueOf() !== userId) {
-        throw new ForbiddenError("Нет прав доступа");
+        throw new ForbiddenError('Нет прав доступа');
       }
 
       return Card.findByIdAndDelete(cardId);
     })
     .then((deletedCard) => {
       if (!deletedCard) {
-        throw new NotFoundError("Карточка уже была удалена");
+        throw new NotFoundError('Карточка уже была удалена');
       }
 
       res.send({ data: deletedCard });
@@ -71,19 +71,19 @@ function likeCard(req, res, next) {
     },
     {
       new: true,
-    }
+    },
   )
     .then((card) => {
       if (card) return res.send({ data: card });
 
-      throw new NotFoundError("Карточка с указанным id не найдена");
+      throw new NotFoundError('Карточка с указанным id не найдена');
     })
     .catch((err) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(
           new BadRequestError(
-            "Переданы некорректные данные при добавлении лайка карточке"
-          )
+            'Переданы некорректные данные при добавлении лайка карточке',
+          ),
         );
       } else {
         next(err);
@@ -104,19 +104,19 @@ function dislikeCard(req, res, next) {
     },
     {
       new: true,
-    }
+    },
   )
     .then((card) => {
       if (card) return res.send({ data: card });
 
-      throw new NotFoundError("Данные по указанному id не найдены");
+      throw new NotFoundError('Данные по указанному id не найдены');
     })
     .catch((err) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(
           new BadRequestError(
-            "Переданы некорректные данные при снятии лайка карточки"
-          )
+            'Переданы некорректные данные при снятии лайка карточки',
+          ),
         );
       } else {
         next(err);
