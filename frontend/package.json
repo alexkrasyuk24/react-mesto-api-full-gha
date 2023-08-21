@@ -20,7 +20,6 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://krasyuk.nomoredomainsicu.ru",
   "eslintConfig": {
     "extends": [
       "react-app",
