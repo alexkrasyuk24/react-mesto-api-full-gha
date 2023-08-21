@@ -7,7 +7,7 @@
 
 ## Ссылки на проект
 
-IP 158.160.4.246
+IP 51.250.106.109
 
 Frontend https://krasyuk.nomoredomainsicu.ru
 
